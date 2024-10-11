@@ -90,7 +90,7 @@ The Job Board Website will implement several security and privacy measures to pr
 # Database Design
 
 ## Entity-Relationship Diagram (ERD)
-(Here, you’ll insert the ERD diagram you create. You can use a tool like Draw.io, Lucidchart, or any diagramming software.)
+![ERD Diagram](./images/ERD.drawio)
 
 ### ERD Breakdown:
 The ERD consists of the following major entities:
