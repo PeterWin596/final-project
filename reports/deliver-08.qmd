@@ -90,7 +90,7 @@ The Job Board Website will implement several security and privacy measures to pr
 # Database Design
 
 ## Entity-Relationship Diagram (ERD)
-![ERD Diagram](./images/ERD.drawio)
+![ERD Diagram](.src/ERD.drawio.png)
 
 ### ERD Breakdown:
 The ERD consists of the following major entities:
