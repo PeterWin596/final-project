@@ -77,12 +77,20 @@ The system is designed to support two primary user roles:
 - **Manage Applications**: Employers can review applications, filter by qualifications, and manage the hiring process.
 - **View Candidate Profiles**: Employers can view applicant profiles and make hiring decisions based on the provided data.
 
+### Security and Privacy
+
+The Job Board Website will implement several security and privacy measures to protect user data. These include:
+- **User Authentication**: Secure login mechanisms will ensure that only authorized users (job seekers and employers) can access their accounts and data.
+- **Data Encryption**: Sensitive data, such as passwords and personal information, will be encrypted both at rest and during transmission to prevent unauthorized access.
+- **Access Control**: Role-based access control will be enforced to ensure that job seekers and employers only have access to the information and features relevant to their roles.
+- **Privacy Compliance**: The system will comply with industry standards for data protection to ensure that user data is handled securely and ethically.
+
 ---
 
 # Database Design
 
 ## Entity-Relationship Diagram (ERD)
-(Here, you’ll insert the ERD diagram you create. You can use a tool like Draw.io, Lucidchart, or any diagramming software.)
+![ERD Diagram](./src/ERD.drawio.png)
 
 ### ERD Breakdown:
 The ERD consists of the following major entities:
