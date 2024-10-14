@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Htoomyat Zeyar, Peter Nguyen">
+<meta name="dcterms.date" content="2024-10-01">
+
+<title>Job Board Website: Database Design</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="deliver-08_files/libs/clipboard/clipboard.min.js"></script>
+<script src="deliver-08_files/libs/quarto-html/quarto.js"></script>
+<script src="deliver-08_files/libs/quarto-html/popper.min.js"></script>
+<script src="deliver-08_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="deliver-08_files/libs/quarto-html/anchor.min.js"></script>
+<link href="deliver-08_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="deliver-08_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="deliver-08_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="deliver-08_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="deliver-08_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="deliver-08_files/libs/quarto-diagram/mermaid.min.js"></script>
+<script src="deliver-08_files/libs/quarto-diagram/mermaid-init.js"></script>
+<link href="deliver-08_files/libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Job Board Website: Database Design</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Htoomyat Zeyar, Peter Nguyen </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 1, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="project-overview" class="level1">
+<h1>Project Overview</h1>
+<p>The Job Board Website is a comprehensive database-driven platform designed to simplify the job search and application process for both job seekers and employers. The platform centralizes job listings, user profiles, and application data, allowing for fast searches, filtered results, and efficient job application tracking.</p>
+<p>The database provides: - A searchable interface for job seekers to find jobs based on multiple criteria. - A management system for employers to post job openings, review applications, and handle the hiring process.</p>
+<section id="key-deliverables" class="level2">
+<h2 class="anchored" data-anchor-id="key-deliverables">Key Deliverables</h2>
+<ul>
+<li><a href="https://vcu.mediaspace.kaltura.com/media/408%20Databases%20Project%20Proposal/1_lu9vyrke">Pitch Video</a></li>
+<li><a href="https://vcu.mediaspace.kaltura.com/media/Databases+design+proposal+video+/1_d4v3mksg">Design Video</a></li>
+<li><a href="https://github.com/cmsc-vcu/cmsc408-fa2024-proj-daydabeys%3E">GitHub Repository</a></li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="problem-description" class="level1">
+<h1>Problem Description</h1>
+<section id="problem-domain" class="level2">
+<h2 class="anchored" data-anchor-id="problem-domain">Problem Domain</h2>
+<p>Job seekers face the challenge of sifting through multiple platforms and job boards to find relevant job listings. This often results in fragmented searches, duplicated efforts, and missed opportunities. On the employers’ side, managing and tracking applications from various sources is time-consuming and inefficient.</p>
+<p>The current job market lacks a centralized system to match job seekers with relevant job postings while helping employers efficiently manage the recruitment process. Our Job Board Website aims to solve this issue by creating a structured, centralized platform for both job seekers and employers.</p>
+<section id="specific-issues-addressed" class="level3">
+<h3 class="anchored" data-anchor-id="specific-issues-addressed">Specific Issues Addressed:</h3>
+<ul>
+<li><strong>For Job Seekers</strong>: Difficulty in finding relevant jobs due to scattered job postings across multiple websites.</li>
+<li><strong>For Employers</strong>: Struggles in managing a large volume of applications from various sources, leading to inefficiencies in the hiring process.</li>
+</ul>
+</section>
+</section>
+<section id="need-for-the-database" class="level2">
+<h2 class="anchored" data-anchor-id="need-for-the-database">Need for the Database</h2>
+<p>A centralized database is essential to streamline the job search and hiring process. Without a structured system, both job seekers and employers would continue to face challenges such as: - Lack of a single source of job listings. - No streamlined way to apply for or track job applications. - No unified system for employers to filter and manage candidates effectively.</p>
+<p>The database will serve as the backbone of the system, organizing data related to: - Job listings (title, description, salary, location, etc.). - User profiles (job seekers and employers). - Application data (job applied for, status, interactions).</p>
+<section id="database-features" class="level3">
+<h3 class="anchored" data-anchor-id="database-features">Database Features:</h3>
+<ul>
+<li><strong>Search Capabilities</strong>: Job seekers can search for jobs by various criteria such as location, industry, salary, and job type.</li>
+<li><strong>Profile Management</strong>: Users can create and manage profiles with their job preferences, qualifications, and application history.</li>
+<li><strong>Application Tracking</strong>: Job seekers can track their application status, and employers can filter and manage applications by qualifications.</li>
+</ul>
+</section>
+</section>
+<section id="context-scope-and-perspective" class="level2">
+<h2 class="anchored" data-anchor-id="context-scope-and-perspective">Context, Scope, and Perspective</h2>
+<p>The system is designed to support two primary user roles: 1. <strong>Job Seekers</strong>: Individuals looking for employment opportunities. They will use the system to search for jobs, create profiles, and apply for positions. 2. <strong>Employers</strong>: Companies looking to fill job openings. They will use the system to post job vacancies, review applications, and manage the hiring process.</p>
+<section id="scope" class="level3">
+<h3 class="anchored" data-anchor-id="scope">Scope:</h3>
+<ul>
+<li>The database will manage all job listings, applications, and user data.</li>
+<li>It will provide job seekers with relevant job matches based on their preferences.</li>
+<li>Employers will have tools to manage postings and filter candidates based on qualifications.</li>
+</ul>
+</section>
+<section id="user-perspectives" class="level3">
+<h3 class="anchored" data-anchor-id="user-perspectives">User Perspectives:</h3>
+<ul>
+<li><strong>Job Seekers</strong>: Can search for jobs using various filters, apply for positions, and track their applications.</li>
+<li><strong>Employers</strong>: Can post jobs, review candidates, and manage the hiring pipeline.</li>
+</ul>
+</section>
+</section>
+<section id="user-roles-and-use-cases" class="level2">
+<h2 class="anchored" data-anchor-id="user-roles-and-use-cases">User Roles and Use Cases</h2>
+<section id="job-seeker-role" class="level3">
+<h3 class="anchored" data-anchor-id="job-seeker-role">Job Seeker Role:</h3>
+<ul>
+<li><strong>Create Profile</strong>: Job seekers can create a profile that includes personal information, qualifications, and job preferences.</li>
+<li><strong>Search for Jobs</strong>: Search for jobs by filters such as location, salary range, job type, and more.</li>
+<li><strong>Apply for Jobs</strong>: Apply directly to job postings and track the status of the application.</li>
+<li><strong>Track Application History</strong>: Users can see which jobs they’ve applied for and track the progress (submitted, under review, rejected, accepted).</li>
+</ul>
+</section>
+<section id="employer-role" class="level3">
+<h3 class="anchored" data-anchor-id="employer-role">Employer Role:</h3>
+<ul>
+<li><strong>Post Job Openings</strong>: Employers can post job openings and specify requirements such as qualifications, job description, and salary range.</li>
+<li><strong>Manage Applications</strong>: Employers can review applications, filter by qualifications, and manage the hiring process.</li>
+<li><strong>View Candidate Profiles</strong>: Employers can view applicant profiles and make hiring decisions based on the provided data.</li>
+</ul>
+</section>
+<section id="security-and-privacy" class="level3">
+<h3 class="anchored" data-anchor-id="security-and-privacy">Security and Privacy</h3>
+<p>The Job Board Website will implement several security and privacy measures to protect user data. These include: - <strong>User Authentication</strong>: Secure login mechanisms will ensure that only authorized users (job seekers and employers) can access their accounts and data. - <strong>Data Encryption</strong>: Sensitive data, such as passwords and personal information, will be encrypted both at rest and during transmission to prevent unauthorized access. - <strong>Access Control</strong>: Role-based access control will be enforced to ensure that job seekers and employers only have access to the information and features relevant to their roles. - <strong>Privacy Compliance</strong>: The system will comply with industry standards for data protection to ensure that user data is handled securely and ethically.</p>
+<hr>
+</section>
+</section>
+</section>
+<section id="database-design" class="level1">
+<h1>Database Design</h1>
+<section id="entity-relationship-diagram-erd" class="level2">
+<h2 class="anchored" data-anchor-id="entity-relationship-diagram-erd">Entity-Relationship Diagram (ERD)</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./src/ERD.drawio.png" class="img-fluid figure-img"></p>
+<figcaption>ERD Diagram</figcaption>
+</figure>
+</div>
+<section id="erd-breakdown" class="level3">
+<h3 class="anchored" data-anchor-id="erd-breakdown">ERD Breakdown:</h3>
+<p>The ERD consists of the following major entities: 1. <strong>Users</strong>: Represents both job seekers and employers. - Attributes: <code>user_id</code>, <code>username</code>, <code>email</code>, <code>password</code>, <code>user_type</code> (seeker or employer) 2. <strong>Jobs</strong>: Represents job postings. - Attributes: <code>job_id</code>, <code>job_title</code>, <code>job_description</code>, <code>salary</code>, <code>location</code>, <code>employer_id</code> 3. <strong>Applications</strong>: Represents job applications. - Attributes: <code>application_id</code>, <code>job_id</code>, <code>user_id</code>, <code>application_date</code>, <code>status</code> 4. <strong>Employers</strong>: Represents companies posting job vacancies. - Attributes: <code>employer_id</code>, <code>company_name</code>, <code>industry</code>, <code>location</code>, <code>contact_info</code></p>
+<div class="cell" data-fig-width="100%" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-chen-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-chen-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="NaN" height="480" viewbox="0.00 0.00 478.91 581.80" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 577.8)">
+<title>ER</title>
+<text text-anchor="middle" x="235.45" y="-542.8" font-family="Helvetica,Arial,sans-serif" font-size="30.00">Job Application System</text>
+<!-- Users -->
+<g id="node1" class="node">
+<title>Users</title>
+<polygon fill="none" stroke="black" points="169.45,-225.85 115.45,-225.85 115.45,-189.85 169.45,-189.85 169.45,-225.85"></polygon>
+<text text-anchor="middle" x="142.45" y="-204.85" font-family="Helvetica,Arial,sans-serif" font-size="10.00">Users</text>
+</g>
+<!-- user_id -->
+<g id="node5" class="node">
+<title>user_id</title>
+<ellipse fill="none" stroke="black" cx="167.5" cy="-125.32" rx="27.15" ry="18"></ellipse>
+<text text-anchor="middle" x="167.5" y="-122.32" font-family="Helvetica,Arial,sans-serif" font-size="10.00">user_id</text>
+</g>
+<!-- Users&#45;&#45;user_id -->
+<g id="edge1" class="edge">
+<title>Users--user_id</title>
+<path fill="none" stroke="black" d="M148.01,-189.54C152.22,-175.67 157.96,-156.74 162.13,-143.02"></path>
+</g>
+<!-- username -->
+<g id="node6" class="node">
+<title>username</title>
+<ellipse fill="none" stroke="black" cx="49.11" cy="-234.15" rx="32.82" ry="18"></ellipse>
+<text text-anchor="middle" x="49.11" y="-231.15" font-family="Helvetica,Arial,sans-serif" font-size="10.00">username</text>
+</g>
+<!-- Users&#45;&#45;username -->
+<g id="edge2" class="edge">
+<title>Users--username</title>
+<path fill="none" stroke="black" d="M114.95,-215.6C103.44,-218.84 90.05,-222.62 78.37,-225.91"></path>
+</g>
+<!-- email -->
+<g id="node7" class="node">
+<title>email</title>
+<ellipse fill="none" stroke="black" cx="39.73" cy="-183.25" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="39.73" y="-180.25" font-family="Helvetica,Arial,sans-serif" font-size="10.00">email</text>
+</g>
+<!-- Users&#45;&#45;email -->
+<g id="edge3" class="edge">
+<title>Users--email</title>
+<path fill="none" stroke="black" d="M115.19,-201.33C99.74,-197.63 80.52,-193.02 65.35,-189.39"></path>
+</g>
+<!-- password -->
+<g id="node8" class="node">
+<title>password</title>
+<ellipse fill="none" stroke="black" cx="115.44" cy="-107.2" rx="32.17" ry="18"></ellipse>
+<text text-anchor="middle" x="115.44" y="-104.2" font-family="Helvetica,Arial,sans-serif" font-size="10.00">password</text>
+</g>
+<!-- Users&#45;&#45;password -->
+<g id="edge4" class="edge">
+<title>Users--password</title>
+<path fill="none" stroke="black" d="M137.49,-189.39C132.59,-171.12 125.13,-143.32 120.27,-125.21"></path>
+</g>
+<!-- user_type -->
+<g id="node9" class="node">
+<title>user_type</title>
+<ellipse fill="none" stroke="black" cx="68.2" cy="-136.51" rx="33" ry="18"></ellipse>
+<text text-anchor="middle" x="68.2" y="-133.51" font-family="Helvetica,Arial,sans-serif" font-size="10.00">user_type</text>
+</g>
+<!-- Users&#45;&#45;user_type -->
+<g id="edge5" class="edge">
+<title>Users--user_type</title>
+<path fill="none" stroke="black" d="M123.71,-189.85C111.68,-178.29 96.21,-163.42 84.65,-152.32"></path>
+</g>
+<!-- applies_for -->
+<g id="node24" class="node">
+<title>applies_for</title>
+<polygon fill="lightgrey" stroke="lightgrey" points="258.08,-230.96 206.35,-212.96 258.08,-194.96 309.81,-212.96 258.08,-230.96"></polygon>
+<text text-anchor="middle" x="258.08" y="-209.96" font-family="Helvetica,Arial,sans-serif" font-size="10.00">applies_for</text>
+</g>
+<!-- Users&#45;&#45;applies_for -->
+<g id="edge22" class="edge">
+<title>Users--applies_for</title>
+<path fill="none" stroke="black" d="M169.56,-209.05C182.24,-209.61 197.7,-210.29 212.13,-210.93"></path>
+<text text-anchor="middle" x="188.34" y="-212.99" font-family="Helvetica,Arial,sans-serif" font-size="10.00">1</text>
+</g>
+<!-- Jobs -->
+<g id="node2" class="node">
+<title>Jobs</title>
+<polygon fill="none" stroke="black" points="335.73,-336.93 281.73,-336.93 281.73,-300.93 335.73,-300.93 335.73,-336.93"></polygon>
+<text text-anchor="middle" x="308.73" y="-315.93" font-family="Helvetica,Arial,sans-serif" font-size="10.00">Jobs</text>
+</g>
+<!-- job_id -->
+<g id="node10" class="node">
+<title>job_id</title>
+<ellipse fill="none" stroke="black" cx="408.62" cy="-294.4" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="408.62" y="-291.4" font-family="Helvetica,Arial,sans-serif" font-size="10.00">job_id</text>
+</g>
+<!-- Jobs&#45;&#45;job_id -->
+<g id="edge6" class="edge">
+<title>Jobs--job_id</title>
+<path fill="none" stroke="black" d="M335.76,-312.29C350.44,-308.69 368.49,-304.26 382.95,-300.71"></path>
+</g>
+<!-- job_title -->
+<g id="node11" class="node">
+<title>job_title</title>
+<ellipse fill="none" stroke="black" cx="367.4" cy="-258.85" rx="29.83" ry="18"></ellipse>
+<text text-anchor="middle" x="367.4" y="-255.85" font-family="Helvetica,Arial,sans-serif" font-size="10.00">job_title</text>
+</g>
+<!-- Jobs&#45;&#45;job_title -->
+<g id="edge7" class="edge">
+<title>Jobs--job_title</title>
+<path fill="none" stroke="black" d="M326.34,-300.9C334.57,-292.47 344.28,-282.52 352.2,-274.42"></path>
+</g>
+<!-- job_description -->
+<g id="node12" class="node">
+<title>job_description</title>
+<ellipse fill="none" stroke="black" cx="339.84" cy="-410.83" rx="47.06" ry="18"></ellipse>
+<text text-anchor="middle" x="339.84" y="-407.83" font-family="Helvetica,Arial,sans-serif" font-size="10.00">job_description</text>
+</g>
+<!-- Jobs&#45;&#45;job_description -->
+<g id="edge8" class="edge">
+<title>Jobs--job_description</title>
+<path fill="none" stroke="black" d="M314.88,-337.08C320.33,-353.2 328.26,-376.61 333.7,-392.71"></path>
+</g>
+<!-- salary -->
+<g id="node13" class="node">
+<title>salary</title>
+<ellipse fill="none" stroke="black" cx="408.06" cy="-346.89" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="408.06" y="-343.89" font-family="Helvetica,Arial,sans-serif" font-size="10.00">salary</text>
+</g>
+<!-- Jobs&#45;&#45;salary -->
+<g id="edge9" class="edge">
+<title>Jobs--salary</title>
+<path fill="none" stroke="black" d="M335.88,-326.57C350.58,-330.71 368.63,-335.79 383,-339.84"></path>
+</g>
+<!-- job_location -->
+<g id="node14" class="node">
+<title>job_location</title>
+<ellipse fill="none" stroke="black" cx="386.21" cy="-396.2" rx="39.87" ry="18"></ellipse>
+<text text-anchor="middle" x="386.21" y="-393.2" font-family="Helvetica,Arial,sans-serif" font-size="10.00">job_location</text>
+</g>
+<!-- Jobs&#45;&#45;job_location -->
+<g id="edge10" class="edge">
+<title>Jobs--job_location</title>
+<path fill="none" stroke="black" d="M327.09,-337.24C339.98,-350.09 357.07,-367.14 369.56,-379.6"></path>
+</g>
+<!-- employer_id -->
+<g id="node15" class="node">
+<title>employer_id</title>
+<ellipse fill="none" stroke="black" cx="244.92" cy="-404.54" rx="40.03" ry="18"></ellipse>
+<text text-anchor="middle" x="244.92" y="-401.54" font-family="Helvetica,Arial,sans-serif" font-size="10.00">employer_id</text>
+</g>
+<!-- Jobs&#45;&#45;employer_id -->
+<g id="edge11" class="edge">
+<title>Jobs--employer_id</title>
+<path fill="none" stroke="black" d="M295.2,-337.08C284.15,-351.91 268.64,-372.71 257.78,-387.29"></path>
+</g>
+<!-- Jobs&#45;&#45;applies_for -->
+<g id="edge24" class="edge">
+<title>Jobs--applies_for</title>
+<path fill="none" stroke="black" d="M299.91,-300.47C290.16,-280.07 274.63,-247.58 265.49,-228.45"></path>
+<text text-anchor="middle" x="280.2" y="-267.46" font-family="Helvetica,Arial,sans-serif" font-size="10.00">1</text>
+</g>
+<!-- Applications -->
+<g id="node3" class="node">
+<title>Applications</title>
+<polygon fill="none" stroke="black" points="353.72,-135.47 286.52,-135.47 286.52,-99.47 353.72,-99.47 353.72,-135.47"></polygon>
+<text text-anchor="middle" x="320.12" y="-114.47" font-family="Helvetica,Arial,sans-serif" font-size="10.00">Applications</text>
+</g>
+<!-- application_id -->
+<g id="node16" class="node">
+<title>application_id</title>
+<ellipse fill="none" stroke="black" cx="371.9" cy="-34.96" rx="44.04" ry="18"></ellipse>
+<text text-anchor="middle" x="371.9" y="-31.96" font-family="Helvetica,Arial,sans-serif" font-size="10.00">application_id</text>
+</g>
+<!-- Applications&#45;&#45;application_id -->
+<g id="edge12" class="edge">
+<title>Applications--application_id</title>
+<path fill="none" stroke="black" d="M331.61,-99.16C340.31,-85.29 352.19,-66.36 360.8,-52.65"></path>
+</g>
+<!-- application_date -->
+<g id="node17" class="node">
+<title>application_date</title>
+<ellipse fill="none" stroke="black" cx="421.55" cy="-96.7" rx="49.22" ry="18"></ellipse>
+<text text-anchor="middle" x="421.55" y="-93.7" font-family="Helvetica,Arial,sans-serif" font-size="10.00">application_date</text>
+</g>
+<!-- Applications&#45;&#45;application_date -->
+<g id="edge13" class="edge">
+<title>Applications--application_date</title>
+<path fill="none" stroke="black" d="M353.89,-110.55C361.73,-108.95 370.18,-107.22 378.36,-105.54"></path>
+</g>
+<!-- status -->
+<g id="node18" class="node">
+<title>status</title>
+<ellipse fill="none" stroke="black" cx="294.29" cy="-18" rx="27" ry="18"></ellipse>
+<text text-anchor="middle" x="294.29" y="-15" font-family="Helvetica,Arial,sans-serif" font-size="10.00">status</text>
+</g>
+<!-- Applications&#45;&#45;status -->
+<g id="edge14" class="edge">
+<title>Applications--status</title>
+<path fill="none" stroke="black" d="M315.38,-99.22C310.69,-81.16 303.56,-53.69 298.91,-35.79"></path>
+</g>
+<!-- Employers -->
+<g id="node4" class="node">
+<title>Employers</title>
+<polygon fill="none" stroke="black" points="171.57,-429.74 111.92,-429.74 111.92,-393.74 171.57,-393.74 171.57,-429.74"></polygon>
+<text text-anchor="middle" x="141.75" y="-408.74" font-family="Helvetica,Arial,sans-serif" font-size="10.00">Employers</text>
+</g>
+<!-- Employers&#45;&#45;employer_id -->
+<g id="edge15" class="edge">
+<title>Employers--employer_id</title>
+<path fill="none" stroke="black" d="M171.59,-409.66C182.06,-408.93 194,-408.1 205.16,-407.32"></path>
+</g>
+<!-- company_name -->
+<g id="node19" class="node">
+<title>company_name</title>
+<ellipse fill="none" stroke="black" cx="62.15" cy="-470.23" rx="47.89" ry="18"></ellipse>
+<text text-anchor="middle" x="62.15" y="-467.23" font-family="Helvetica,Arial,sans-serif" font-size="10.00">company_name</text>
+</g>
+<!-- Employers&#45;&#45;company_name -->
+<g id="edge16" class="edge">
+<title>Employers--company_name</title>
+<path fill="none" stroke="black" d="M117,-429.93C106.5,-437.64 94.37,-446.55 84.19,-454.04"></path>
+</g>
+<!-- industry -->
+<g id="node20" class="node">
+<title>industry</title>
+<ellipse fill="none" stroke="black" cx="176.74" cy="-511.8" rx="29.17" ry="18"></ellipse>
+<text text-anchor="middle" x="176.74" y="-508.8" font-family="Helvetica,Arial,sans-serif" font-size="10.00">industry</text>
+</g>
+<!-- Employers&#45;&#45;industry -->
+<g id="edge17" class="edge">
+<title>Employers--industry</title>
+<path fill="none" stroke="black" d="M148.17,-430.1C154.52,-448.26 164.18,-475.89 170.48,-493.9"></path>
+</g>
+<!-- location -->
+<g id="node21" class="node">
+<title>location</title>
+<ellipse fill="none" stroke="black" cx="115.19" cy="-507.33" rx="28.98" ry="18"></ellipse>
+<text text-anchor="middle" x="115.19" y="-504.33" font-family="Helvetica,Arial,sans-serif" font-size="10.00">location</text>
+</g>
+<!-- Employers&#45;&#45;location -->
+<g id="edge18" class="edge">
+<title>Employers--location</title>
+<path fill="none" stroke="black" d="M136.63,-430.17C131.9,-447.21 124.91,-472.37 120.21,-489.28"></path>
+</g>
+<!-- contact_info -->
+<g id="node22" class="node">
+<title>contact_info</title>
+<ellipse fill="none" stroke="black" cx="39.68" cy="-414.21" rx="39.85" ry="18"></ellipse>
+<text text-anchor="middle" x="39.68" y="-411.21" font-family="Helvetica,Arial,sans-serif" font-size="10.00">contact_info</text>
+</g>
+<!-- Employers&#45;&#45;contact_info -->
+<g id="edge19" class="edge">
+<title>Employers--contact_info</title>
+<path fill="none" stroke="black" d="M111.95,-412.46C101.83,-412.71 90.35,-412.99 79.57,-413.25"></path>
+</g>
+<!-- posts -->
+<g id="node23" class="node">
+<title>posts</title>
+<polygon fill="lightgrey" stroke="lightgrey" points="226.29,-384.57 195.11,-366.57 226.29,-348.57 257.48,-366.57 226.29,-384.57"></polygon>
+<text text-anchor="middle" x="226.29" y="-363.57" font-family="Helvetica,Arial,sans-serif" font-size="10.00">posts</text>
+</g>
+<!-- Employers&#45;&#45;posts -->
+<g id="edge20" class="edge">
+<title>Employers--posts</title>
+<path fill="none" stroke="black" d="M171.79,-395.69C184.51,-388.89 198.85,-381.24 209.62,-375.48"></path>
+<text text-anchor="middle" x="188.21" y="-388.58" font-family="Helvetica,Arial,sans-serif" font-size="10.00">1</text>
+</g>
+<!-- employs -->
+<g id="node25" class="node">
+<title>employs</title>
+<polygon fill="lightgrey" stroke="lightgrey" points="114.2,-327 71.85,-309 114.2,-291 156.55,-309 114.2,-327"></polygon>
+<text text-anchor="middle" x="114.2" y="-306" font-family="Helvetica,Arial,sans-serif" font-size="10.00">employs</text>
+</g>
+<!-- Employers&#45;&#45;employs -->
+<g id="edge25" class="edge">
+<title>Employers--employs</title>
+<path fill="none" stroke="black" d="M136.82,-393.38C131.62,-373.98 123.5,-343.7 118.54,-325.18"></path>
+<text text-anchor="middle" x="125.18" y="-362.28" font-family="Helvetica,Arial,sans-serif" font-size="10.00">n</text>
+</g>
+<!-- posts&#45;&#45;Jobs -->
+<g id="edge21" class="edge">
+<title>posts--Jobs</title>
+<path fill="none" stroke="black" d="M242.19,-357.39C253.32,-350.95 268.49,-342.19 281.53,-334.65"></path>
+<text text-anchor="middle" x="259.36" y="-337.02" font-family="Helvetica,Arial,sans-serif" font-size="10.00">n</text>
+</g>
+<!-- applies_for&#45;&#45;Applications -->
+<g id="edge23" class="edge">
+<title>applies_for--Applications</title>
+<path fill="none" stroke="black" d="M267.77,-198.04C278.75,-181.15 296.62,-153.63 308.38,-135.54"></path>
+<text text-anchor="middle" x="285.58" y="-169.79" font-family="Helvetica,Arial,sans-serif" font-size="10.00">n</text>
+</g>
+<!-- employs&#45;&#45;Users -->
+<g id="edge26" class="edge">
+<title>employs--Users</title>
+<path fill="none" stroke="black" d="M118.74,-292.75C123.82,-274.54 132.04,-245.1 137.35,-226.12"></path>
+<text text-anchor="middle" x="125.54" y="-262.43" font-family="Helvetica,Arial,sans-serif" font-size="10.00">n</text>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chen-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Job Application System Chen Diagram
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">erDiagram 
+
+    USERS {
+        int user_id
+        string username
+        string email
+        string password
+        string user_type
+    }
+
+    JOBS {
+        int job_id
+        string job_title
+        string job_description
+        float salary
+        string location
+        int employer_id
+    }
+
+    APPLICATIONS {
+        int application_id
+        int job_id
+        int user_id
+        date application_date
+        string status
+    }
+
+    EMPLOYERS {
+        int employer_id
+        string company_name
+        string industry
+        string location
+        string contact_info
+    }
+
+    EMPLOYERS ||--o{ JOBS : posts
+    USERS ||--o{ APPLICATIONS : applies_for
+    JOBS ||--o| APPLICATIONS : receives
+    EMPLOYERS ||--o| USERS : employs
+
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="relational-schemas" class="level2">
+<h2 class="anchored" data-anchor-id="relational-schemas">Relational Schemas</h2>
+<p>Below is a detailed schema for each entity, with attributes, primary and foreign keys, and constraints.</p>
+<section id="users-table" class="level3">
+<h3 class="anchored" data-anchor-id="users-table">Users Table:</h3>
+<p>```plaintext Users( user_id INT PRIMARY KEY, username VARCHAR(50), email VARCHAR(100) UNIQUE, password VARCHAR(256), user_type ENUM(‘seeker’, ‘employer’) )</p>
+</section>
+<section id="relational-schemas-1" class="level3">
+<h3 class="anchored" data-anchor-id="relational-schemas-1">Relational Schemas</h3>
+<p>Here are the relational schemas for each entity in the database, with primary keys (PK), foreign keys (FK), data types, domains, and constraints.</p>
+<ol type="1">
+<li>Users</li>
+</ol>
+<p>Users( user_id INT PRIMARY KEY, – Unique identifier for each user (PK) username VARCHAR(50) NOT NULL, – Username, must be unique for each user email VARCHAR(100) UNIQUE NOT NULL, – Email, must be unique and not null password VARCHAR(256) NOT NULL, – Password for the user, encrypted user_type ENUM(‘seeker’, ‘employer’)– Defines if the user is a job seeker or employer ) • Primary Key: user_id • Domain: user_type restricted to values (‘seeker’, ‘employer’).</p>
+<ol start="2" type="1">
+<li>Jobs</li>
+</ol>
+<p>Jobs( job_id INT PRIMARY KEY, – Unique identifier for each job (PK) job_title VARCHAR(100) NOT NULL, – Job title job_description TEXT, – Detailed job description salary DECIMAL(10,2), – Salary for the job location VARCHAR(100), – Job location employer_id INT, – FK referencing Employers FOREIGN KEY (employer_id) REFERENCES Employers(employer_id) ON DELETE CASCADE – Ensure referential integrity ) • Primary Key: job_id • Foreign Key: employer_id references the Employers table.</p>
+<ol start="3" type="1">
+<li>Applications</li>
+</ol>
+<p>Applications( application_id INT PRIMARY KEY, – Unique identifier for each application (PK) job_id INT, – FK referencing Jobs table user_id INT, – FK referencing Users table application_date DATE, – Date the application was submitted status ENUM(‘submitted’, ‘under review’, ‘rejected’, ‘accepted’), – Status of the application FOREIGN KEY (job_id) REFERENCES Jobs(job_id) ON DELETE CASCADE, – Ensure referential integrity FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE – Ensure referential integrity )</p>
+<pre><code>•   Primary Key: application_id
+•   Foreign Keys: job_id references Jobs, user_id references Users.</code></pre>
+<ol start="4" type="1">
+<li>Employers</li>
+</ol>
+<p>Employers( employer_id INT PRIMARY KEY, – Unique identifier for each employer (PK) company_name VARCHAR(100) NOT NULL, – Company name industry VARCHAR(100), – Industry in which the company operates location VARCHAR(100), – Location of the company contact_info VARCHAR(100) – Contact details of the employer ) • Primary Key: employer_id</p>
+<p>Functional Dependencies and Normalization</p>
+<p>Functional Dependencies</p>
+<p>Let’s look at the functional dependencies in the proposed schema:</p>
+<pre><code>•   In Users:
+•   user_id → username, email, password, user_type (Each user ID uniquely identifies a set of attributes).
+•   In Jobs:
+•   job_id → job_title, job_description, salary, location, employer_id (A unique job ID determines all job attributes).
+•   In Applications:
+•   application_id → job_id, user_id, application_date, status (A unique application ID determines job, user, and application status).
+•   In Employers:
+•   employer_id → company_name, industry, location, contact_info (An employer ID uniquely determines company information).</code></pre>
+<p>Normalization Process</p>
+<p>The schema is designed to be in BCNF (Boyce-Codd Normal Form) to remove redundancy and ensure functional dependency integrity. Here’s the process:</p>
+<pre><code>•   First Normal Form (1NF):
+•   The relations are in 1NF since all attributes contain atomic values, and there are no repeating groups.
+•   Second Normal Form (2NF):
+•   The schema is in 2NF since all non-key attributes are fully functionally dependent on the primary key (e.g., job_id fully determines job_title, salary, etc.).
+•   Boyce-Codd Normal Form (BCNF):
+•   The schema is in BCNF because for every functional dependency X → Y, X is a superkey. For example, in the Jobs table, job_id is the only determinant of other attributes.</code></pre>
+<p>The decomposition into BCNF ensures there are no redundant data, and each relation represents one concept (user, job, application, employer).</p>
+<p>20 Specific Queries (Relational Algebra)</p>
+<p>Here are 20 distinct queries that the database can answer, written in precise words and using relational algebra.</p>
+<pre><code>1.  Find all job titles for jobs located in New York:
+•   π(job_title) (σ(location=‘New York’) (Jobs))
+2.  List the usernames of users who applied for a specific job (job_id = 101):
+•   π(username) (σ(job_id=101) (Users ⨝ Applications))
+3.  Find the count of applications for a specific job (job_id = 101):
+•   COUNT(σ(job_id=101) (Applications))
+4.  Display job titles with salaries greater than $80,000:
+•   π(job_title, salary) (σ(salary &gt; 80000) (Jobs))
+5.  List the email addresses of users who have applied for jobs in the ‘Software Engineer’ role:
+•   π(email) (σ(job_title=‘Software Engineer’) (Users ⨝ Applications ⨝ Jobs))
+6.  Retrieve all applications that are still under review:
+•   σ(status=‘under review’) (Applications)
+7.  Find the top 5 highest-paying jobs:
+•   π(job_title, salary) (Jobs) ORDER BY salary DESC LIMIT 5
+8.  List all jobs posted by a specific employer (employer_id = 10):
+•   π(job_title) (σ(employer_id=10) (Jobs))
+9.  Find the names of employers in the ‘Technology’ industry:
+•   π(company_name) (σ(industry=‘Technology’) (Employers))
+10. List all job applications submitted in the past week:
+•   π(application_id, job_id, application_date) (σ(application_date &gt; (CURRENT_DATE - INTERVAL ‘7 DAYS’)) (Applications))
+11. Retrieve all job postings that have received at least one application:
+•   π(job_title) (Jobs ⨝ Applications)
+12. Find job postings that have not received any applications:
+•   π(job_title) (Jobs ⟕ Applications WHERE application_id IS NULL)
+13. List the average salary of all job postings by industry:
+•   γ(industry, AVG(salary)) (Jobs ⨝ Employers)
+14. Retrieve the total number of users (job seekers) on the platform:
+•   COUNT(σ(user_type=‘seeker’) (Users))
+15. Find the top 3 most applied-to jobs:
+•   π(job_id, COUNT(application_id)) (Applications) GROUP BY job_id ORDER BY COUNT(application_id) DESC LIMIT 3
+16. Find all applications submitted by a specific user (user_id = 5):
+•   π(application_id, job_title) (Users ⨝ Applications ⨝ Jobs WHERE user_id=5)
+17. List the highest-paying job in each location:
+•   γ(location, MAX(salary)) (Jobs)
+18. Find the status of applications for a specific job (job_id = 202):
+•   π(application_id, status) (σ(job_id=202) (Applications))
+19. Retrieve all job seekers who have not applied for any jobs yet:
+•   π(username) (σ(user_type=‘seeker’) (Users ⟕ Applications WHERE application_id IS NULL))
+20. Find the job titles of the most recent jobs posted by each employer:
+•   γ(employer_id, MAX(job_id)) (Jobs)</code></pre>
+<p>Sample Data</p>
+<p>Users Table:</p>
+<p>Here’s the sample data you can use for each of the tables in your <strong>Job Board Website</strong> database. You can directly copy these into your <strong><code>delivery8.qmd</code></strong> file.</p>
+</section>
+<section id="sample-data-for-users-table" class="level3">
+<h3 class="anchored" data-anchor-id="sample-data-for-users-table"><strong>Sample Data for Users Table:</strong></h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>user_id</th>
+<th>username</th>
+<th>email</th>
+<th>password</th>
+<th>user_type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>jsmith</td>
+<td>jsmith@email.com</td>
+<td>*****</td>
+<td>seeker</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>acorp</td>
+<td>hr@acorp.com</td>
+<td>*****</td>
+<td>employer</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>mjohnson</td>
+<td>mjohnson@gmail.com</td>
+<td>*****</td>
+<td>seeker</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>techcorp</td>
+<td>hiring@techcorp.com</td>
+<td>*****</td>
+<td>employer</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>amiller</td>
+<td>amiller@yahoo.com</td>
+<td>*****</td>
+<td>seeker</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="sample-data-for-jobs-table" class="level3">
+<h3 class="anchored" data-anchor-id="sample-data-for-jobs-table"><strong>Sample Data for Jobs Table:</strong></h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 19%">
+<col style="width: 27%">
+<col style="width: 9%">
+<col style="width: 19%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>job_id</th>
+<th>job_title</th>
+<th>job_description</th>
+<th>salary</th>
+<th>location</th>
+<th>employer_id</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>101</td>
+<td>Software Engineer</td>
+<td>Develop software</td>
+<td>80000.00</td>
+<td>New York, NY</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>102</td>
+<td>Data Analyst</td>
+<td>Analyze data trends</td>
+<td>65000.00</td>
+<td>San Francisco, CA</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>103</td>
+<td>Product Manager</td>
+<td>Oversee product roadmap</td>
+<td>90000.00</td>
+<td>Austin, TX</td>
+<td>4</td>
+</tr>
+<tr class="even">
+<td>104</td>
+<td>Web Developer</td>
+<td>Build web applications</td>
+<td>75000.00</td>
+<td>Chicago, IL</td>
+<td>4</td>
+</tr>
+<tr class="odd">
+<td>105</td>
+<td>IT Support</td>
+<td>Provide technical support</td>
+<td>50000.00</td>
+<td>Seattle, WA</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="sample-data-for-applications-table" class="level3">
+<h3 class="anchored" data-anchor-id="sample-data-for-applications-table"><strong>Sample Data for Applications Table:</strong></h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>application_id</th>
+<th>job_id</th>
+<th>user_id</th>
+<th>application_date</th>
+<th>status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>101</td>
+<td>1</td>
+<td>2024-09-30</td>
+<td>submitted</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>102</td>
+<td>1</td>
+<td>2024-10-01</td>
+<td>under review</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>103</td>
+<td>3</td>
+<td>2024-10-02</td>
+<td>submitted</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>101</td>
+<td>3</td>
+<td>2024-10-03</td>
+<td>rejected</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>104</td>
+<td>5</td>
+<td>2024-10-04</td>
+<td>under review</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="sample-data-for-employers-table" class="level3">
+<h3 class="anchored" data-anchor-id="sample-data-for-employers-table"><strong>Sample Data for Employers Table:</strong></h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 17%">
+<col style="width: 19%">
+<col style="width: 21%">
+<col style="width: 24%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>employer_id</th>
+<th>company_name</th>
+<th>industry</th>
+<th>location</th>
+<th>contact_info</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2</td>
+<td>ACORP Inc.</td>
+<td>Technology</td>
+<td>New York, NY</td>
+<td>hr@acorp.com</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>TechCorp LLC</td>
+<td>Software</td>
+<td>San Francisco, CA</td>
+<td>hiring@techcorp.com</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="gantt-chart" class="level2">
+<h2 class="anchored" data-anchor-id="gantt-chart">Gantt Chart</h2>
+<p>```wfavxcr title: Project Management Schedule dateFormat YYYY-MM-DD section Planning &amp; Design ERD Design :done, des1, 2024-10-01, 2024-10-04 Relational Schema Design:done, des2, 2024-10-05, 2024-10-07 Functional Dependencies Analysis:done, des3, 2024-10-08, 2024-10-09 Query Development :active, des4, 2024-10-10, 2024-10-11 Initial Report Submission : milestone, rep1, 2024-10-13, 1d</p>
+<pre><code>section Development &amp; Refinement
+Video Presentation Preparation:    dev1, 2024-10-15, 2024-10-20
+Project Refinement (Schema, Queries, etc.):    dev2, 2024-11-01, 2024-11-15
+Testing and Debugging      :       dev3, 2024-11-16, 2024-12-01
+
+section Final Submission
+Final Report Refinement    :       sub1, 2024-12-01, 2024-12-08
+Final Project Submission   : milestone, sub2, 2024-12-12, 1d</code></pre>
+<section id="explanation-of-the-gantt-chart" class="level4">
+<h4 class="anchored" data-anchor-id="explanation-of-the-gantt-chart"><strong>Explanation of the Gantt Chart:</strong></h4>
+<ul>
+<li>The Gantt chart shows each task in a horizontal timeline format with start and end dates.</li>
+<li><strong>Milestones</strong> (like the <strong>Initial Report Submission</strong> and <strong>Final Project Submission</strong>) are represented as single-day tasks.</li>
+<li>The <strong>completed</strong> tasks (like ERD Design, Schema Design) are marked as <code>done</code>.</li>
+<li>The <strong>current task</strong> (Query Development) is marked as <code>active</code>, indicating that work is still ongoing.</li>
+</ul>
+<hr>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
