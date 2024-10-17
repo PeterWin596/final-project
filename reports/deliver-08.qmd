@@ -14,7 +14,7 @@ The database provides:
 - A management system for employers to post job openings, review applications, and handle the hiring process.
 
 ## Key Deliverables
-- [Pitch Video](https://vcu.mediaspace.kaltura.com/media/408%20Databases%20Project%20Proposal/1_lu9vyrke)
+- [Pitch Video](https://vcu.mediaspace.kaltura.com/media/408+Databases+Project+Proposal/1_lu9vyrke)
 - [Design Video](https://vcu.mediaspace.kaltura.com/media/Databases+design+proposal+video+/1_d4v3mksg)
 - [GitHub Repository](https://github.com/cmsc-vcu/cmsc408-fa2024-proj-daydabeys>)
 
