@@ -16,7 +16,7 @@ The database provides:
 ## Key Deliverables
 - [Pitch Video](https://vcu.mediaspace.kaltura.com/media/408+Databases+Project+Proposal/1_lu9vyrke)
 - [Design Video](https://vcu.mediaspace.kaltura.com/media/Databases+design+proposal+video+/1_d4v3mksg)
-- [GitHub Repository](https://github.com/cmsc-vcu/cmsc408-fa2024-proj-daydabeys>)
+- [GitHub Repository](https://github.com/cmsc-vcu/cmsc408-fa2024-proj-daydabeys)
 
 ---
 
@@ -242,7 +242,7 @@ Users(
    password VARCHAR(256),
    user_type ENUM('seeker', 'employer')
 )
-
+```
 ### Relational Schemas
 
 Here are the relational schemas for each entity in the database, with primary keys (PK), foreign keys (FK), data types, domains, and constraints.
@@ -300,9 +300,9 @@ Employers(
 )
 	•	Primary Key: employer_id
 
-Functional Dependencies and Normalization
+### Functional Dependencies and Normalization
 
-Functional Dependencies
+### Functional Dependencies
 
 Let’s look at the functional dependencies in the proposed schema:
 
@@ -315,7 +315,7 @@ Let’s look at the functional dependencies in the proposed schema:
 	•	In Employers:
 	•	employer_id → company_name, industry, location, contact_info (An employer ID uniquely determines company information).
 
-Normalization Process
+### Normalization Process
 
 The schema is designed to be in BCNF (Boyce-Codd Normal Form) to remove redundancy and ensure functional dependency integrity. Here’s the process:
 
@@ -328,7 +328,7 @@ The schema is designed to be in BCNF (Boyce-Codd Normal Form) to remove redundan
 
 The decomposition into BCNF ensures there are no redundant data, and each relation represents one concept (user, job, application, employer).
 
-20 Specific Queries (Relational Algebra)
+### 20 Specific Queries (Relational Algebra)
 
 Here are 20 distinct queries that the database can answer, written in precise words and using relational algebra.
 
@@ -374,7 +374,7 @@ Here are 20 distinct queries that the database can answer, written in precise wo
 	•	γ(employer_id, MAX(job_id)) (Jobs)
 
 
-Sample Data
+### Sample Data
 
 
 Users Table:
