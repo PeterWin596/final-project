@@ -31,14 +31,13 @@ app.get('/', (req, res) => {
 
 // API Endpoint: Get All Jobs
 app.get('/jobs', (req, res) => {
-    const query = 'SELECT * FROM Jobs'; // SQL query to fetch all jobs
+    const query = 'SELECT * FROM Jobs'; // Fetch all fields
     db.query(query, (err, results) => {
         if (err) {
             console.error('Error fetching jobs:', err);
-            res.status(500).send(err); // Send error response if query fails
-        } else {
-            res.json(results); // Send query results as JSON response
+            return res.status(500).send('Server error.');
         }
+        res.json(results); // Send all jobs as JSON
     });
 });
 

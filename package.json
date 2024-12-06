@@ -3,16 +3,26 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "## Project Overview The Job Board Website is a database-driven platform created to streamline the job search and application process for job seekers and employers. It centralizes job listings, user profiles, and application data to enable efficient job searches, filtered results, and comprehensive application tracking.",
   "dependencies": {
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
-    "express": "^4.21.1",
-    "mysql2": "^3.11.5"
-  }
+    "express": "^4.21.2",
+    "mysql2": "^3.11.5",
+    "qs": "^6.13.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmsc-vcu/cmsc408-fa2024-proj-daydabeys.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cmsc-vcu/cmsc408-fa2024-proj-daydabeys/issues"
+  },
+  "homepage": "https://github.com/cmsc-vcu/cmsc408-fa2024-proj-daydabeys#readme"
 }
