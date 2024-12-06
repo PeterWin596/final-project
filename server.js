@@ -45,14 +45,19 @@ app.get('/jobs', (req, res) => {
 // API Endpoint: Add a New Job
 app.post('/jobs', (req, res) => {
     const { title, description, salary, location, employer_id } = req.body;
+
+    // Validate input fields
+    if (!title || !description || !salary || !location || !employer_id) {
+        return res.status(400).send('All fields are required!');
+    }
+
     const query = 'INSERT INTO Jobs (title, description, salary, location, employer_id) VALUES (?, ?, ?, ?, ?)';
     db.query(query, [title, description, salary, location, employer_id], (err, results) => {
         if (err) {
             console.error('Error adding job:', err);
-            res.status(500).send(err); // Send error response if query fails
-        } else {
-            res.status(201).send('Job created successfully!');
+            return res.status(500).send('Server error while adding job.');
         }
+        res.status(201).send('Job created successfully!');
     });
 });
 
@@ -86,6 +91,32 @@ app.delete('/jobs/:id', (req, res) => {
         } else {
             res.send('Job deleted successfully!');
         }
+    });
+});
+
+// New Endpoint: Filter Jobs by Location
+app.get('/jobs/location/:location', (req, res) => {
+    const { location } = req.params; // Extract location from URL
+    const query = 'SELECT * FROM Jobs WHERE location = ?'; // SQL query to filter by location
+    db.query(query, [location], (err, results) => {
+        if (err) {
+            console.error('Error fetching jobs by location:', err);
+            return res.status(500).send('Server error.');
+        }
+        res.json(results); // Send filtered jobs as JSON
+    });
+});
+
+// New Endpoint: Filter Jobs by Salary Range
+app.get('/jobs/salary', (req, res) => {
+    const { min, max } = req.query; // Extract min and max salary from query parameters
+    const query = 'SELECT * FROM Jobs WHERE salary BETWEEN ? AND ?'; // SQL query to filter by salary range
+    db.query(query, [min, max], (err, results) => {
+        if (err) {
+            console.error('Error fetching jobs by salary range:', err);
+            return res.status(500).send('Server error.');
+        }
+        res.json(results); // Send filtered jobs as JSON
     });
 });
 
