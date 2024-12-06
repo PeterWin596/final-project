@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Board - Reports</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        button {
+            display: inline-block;
+            margin: 10px 0;
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        pre {
+            background-color: #ecf0f1;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reports</h1>
+    <p>Click on any button below to run the corresponding query and see the results.</p>
+
+    <div>
+        <h2>Query List</h2>
+        <button onclick="fetchReport('/reports/jobs-in-newyork')">1. Jobs in New York</button>
+        <button onclick="fetchReport('/reports/users-applied/101')">2. Users Applied for Job ID 101</button>
+        <button onclick="fetchReport('/reports/application-count/101')">3. Application Count for Job ID 101</button>
+        <button onclick="fetchReport('/reports/high-salary-jobs')">4. Jobs with Salary > $80,000</button>
+        <button onclick="fetchReport('/reports/emails-for-job/Software%20Engineer')">5. Emails for Software Engineer Job</button>
+        <button onclick="fetchReport('/reports/applications-under-review')">6. Applications Under Review</button>
+        <button onclick="fetchReport('/reports/top-highest-paying-jobs')">7. Top 5 Highest Paying Jobs</button>
+        <button onclick="fetchReport('/reports/jobs-by-employer/1')">8. Jobs by Employer ID 1</button>
+        <button onclick="fetchReport('/reports/employers-by-industry/Technology')">9. Employers in Technology Industry</button>
+        <button onclick="fetchReport('/reports/applications-past-week')">10. Applications Submitted in the Past Week</button>
+        <button onclick="fetchReport('/reports/jobs-with-applications')">11. Jobs with Applications</button>
+        <button onclick="fetchReport('/reports/jobs-without-applications')">12. Jobs Without Applications</button>
+        <button onclick="fetchReport('/reports/average-salary-by-industry')">13. Average Salary by Industry</button>
+        <button onclick="fetchReport('/reports/total-job-seekers')">14. Total Job Seekers</button>
+        <button onclick="fetchReport('/reports/top-applied-jobs')">15. Top Applied Jobs</button>
+        <button onclick="fetchReport('/reports/user-applications/5')">16. Applications Submitted by User ID 5</button>
+        <button onclick="fetchReport('/reports/highest-paying-jobs-by-location')">17. Highest Paying Jobs by Location</button>
+        <button onclick="fetchReport('/reports/job-application-status/202')">18. Application Status for Job ID 202</button>
+        <button onclick="fetchReport('/reports/job-seekers-no-applications')">19. Job Seekers with No Applications</button>
+        <button onclick="fetchReport('/reports/most-recent-jobs-by-employer')">20. Most Recent Jobs by Employer</button>
+    </div>
+
+    <h2>Results</h2>
+    <pre id="reportResults">Click a button to see the query results here.</pre>
+
+    <script>
+        function fetchReport(endpoint) {
+            document.getElementById('reportResults').textContent = 'Fetching data...';
+            fetch(`http://localhost:3001${endpoint}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('reportResults').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(err => {
+                    document.getElementById('reportResults').textContent = `Error: ${err.message}`;
+                });
+        }
+    </script>
+</body>
+</html>

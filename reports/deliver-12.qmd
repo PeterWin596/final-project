@@ -1,8 +1,453 @@
 ---
-title: deliverable 12
+title: "Job Board Website: Database Design"
+author: "Htoomyat Zeyar, Peter Nguyen"
+date: "December 2024"
+output: html_document
+---
 
-## no scaffold is provided for this QMD.  You need to create it yourself!
+# Project Overview
+
+The Job Board Website is a comprehensive database-driven platform designed to simplify the job search and application process for both job seekers and employers. The platform centralizes job listings, user profiles, and application data, allowing for fast searches, filtered results, and efficient job application tracking.
+
+The database provides:
+- A searchable interface for job seekers to find jobs based on multiple criteria.
+- A management system for employers to post job openings, review applications, and handle the hiring process.
+
+## Key Deliverables
+- [Pitch Video](https://vcu.mediaspace.kaltura.com/media/408+Databases+Project+Proposal/1_lu9vyrke)
+- [Design Video](https://vcu.mediaspace.kaltura.com/media/Databases+design+proposal+video+/1_d4v3mksg)
+- [GitHub Repository](https://github.com/cmsc-vcu/cmsc408-fa2024-proj-daydabeys)
 
 ---
 
-# hello world!
+# Problem Description
+
+## Problem Domain
+
+Job seekers face the challenge of sifting through multiple platforms and job boards to find relevant job listings. This often results in fragmented searches, duplicated efforts, and missed opportunities. On the employers' side, managing and tracking applications from various sources is time-consuming and inefficient.
+
+The current job market lacks a centralized system to match job seekers with relevant job postings while helping employers efficiently manage the recruitment process. Our Job Board Website aims to solve this issue by creating a structured, centralized platform for both job seekers and employers.
+
+### Specific Issues Addressed:
+- **For Job Seekers**: Difficulty in finding relevant jobs due to scattered job postings across multiple websites.
+- **For Employers**: Struggles in managing a large volume of applications from various sources, leading to inefficiencies in the hiring process.
+
+## Need for the Database
+
+A centralized database is essential to streamline the job search and hiring process. Without a structured system, both job seekers and employers would continue to face challenges such as:
+- Lack of a single source of job listings.
+- No streamlined way to apply for or track job applications.
+- No unified system for employers to filter and manage candidates effectively.
+
+The database will serve as the backbone of the system, organizing data related to:
+- Job listings (title, description, salary, location, etc.).
+- User profiles (job seekers and employers).
+- Application data (job applied for, status, interactions).
+
+### Database Features:
+- **Search Capabilities**: Job seekers can search for jobs by various criteria such as location, industry, salary, and job type.
+- **Profile Management**: Users can create and manage profiles with their job preferences, qualifications, and application history.
+- **Application Tracking**: Job seekers can track their application status, and employers can filter and manage applications by qualifications.
+
+## Context, Scope, and Perspective
+
+The system is designed to support two primary user roles:
+1. **Job Seekers**: Individuals looking for employment opportunities. They will use the system to search for jobs, create profiles, and apply for positions.
+2. **Employers**: Companies looking to fill job openings. They will use the system to post job vacancies, review applications, and manage the hiring process.
+
+### Scope:
+- The database will manage all job listings, applications, and user data.
+- It will provide job seekers with relevant job matches based on their preferences.
+- Employers will have tools to manage postings and filter candidates based on qualifications.
+
+### User Perspectives:
+- **Job Seekers**: Can search for jobs using various filters, apply for positions, and track their applications.
+- **Employers**: Can post jobs, review candidates, and manage the hiring pipeline.
+
+## User Roles and Use Cases
+
+### Job Seeker Role:
+- **Create Profile**: Job seekers can create a profile that includes personal information, qualifications, and job preferences.
+- **Search for Jobs**: Search for jobs by filters such as location, salary range, job type, and more.
+- **Apply for Jobs**: Apply directly to job postings and track the status of the application.
+- **Track Application History**: Users can see which jobs they’ve applied for and track the progress (submitted, under review, rejected, accepted).
+
+### Employer Role:
+- **Post Job Openings**: Employers can post job openings and specify requirements such as qualifications, job description, and salary range.
+- **Manage Applications**: Employers can review applications, filter by qualifications, and manage the hiring process.
+- **View Candidate Profiles**: Employers can view applicant profiles and make hiring decisions based on the provided data.
+
+### Security and Privacy
+
+The Job Board Website will implement several security and privacy measures to protect user data. These include:
+- **User Authentication**: Secure login mechanisms will ensure that only authorized users (job seekers and employers) can access their accounts and data.
+- **Data Encryption**: Sensitive data, such as passwords and personal information, will be encrypted both at rest and during transmission to prevent unauthorized access.
+- **Access Control**: Role-based access control will be enforced to ensure that job seekers and employers only have access to the information and features relevant to their roles.
+- **Privacy Compliance**: The system will comply with industry standards for data protection to ensure that user data is handled securely and ethically.
+
+---
+
+# Database Design
+
+## Entity-Relationship Diagram (ERD)
+![ERD Diagram](./src/ERD.drawio.png)
+
+### ERD Breakdown:
+The ERD consists of the following major entities:
+1. **Users**: Represents both job seekers and employers.
+   - Attributes: `user_id`, `username`, `email`, `password`, `user_type` (seeker or employer)
+2. **Jobs**: Represents job postings.
+   - Attributes: `job_id`, `job_title`, `job_description`, `salary`, `location`, `employer_id`
+3. **Applications**: Represents job applications.
+   - Attributes: `application_id`, `job_id`, `user_id`, `application_date`, `status`
+4. **Employers**: Represents companies posting job vacancies.
+   - Attributes: `employer_id`, `company_name`, `industry`, `location`, `contact_info`
+
+```{dot}
+//| label: fig-chen-2
+//| fig-cap: "Job Application System Chen Diagram"
+//| fig-width: 100%
+graph ER {
+    fontname="Helvetica,Arial,sans-serif"
+    fontsize=30;   
+    label="Job Application System";
+    labelloc="t";  
+    labeljust="c"; 
+
+    bgcolor=transparent;   
+
+    layout=neato  
+    scale=1.2     
+
+    // Set defaults for nodes
+    node [fontname="Helvetica,Arial,sans-serif",fontsize=10]
+
+    // Define entities as boxes
+    node [shape=box];
+    Users; Jobs; Applications; Employers;
+
+    // Define attributes as ovals
+    node [shape=ellipse];
+    {user_id; username; email; password; user_type;}
+    {job_id; job_title; job_description; salary; job_location; employer_id;}
+    {application_id; application_date; status;}
+    {employer_id; company_name; industry; location; contact_info;}
+
+    // No separate ovals for primary keys (user_id, job_id, employer_id, application_id)
+    // They're directly connected to their entities
+
+    // Define relationships as diamonds
+    node [shape=diamond,style=filled,color=lightgrey]; 
+    "posts"; "applies_for"; "employs";
+
+    // Set defaults for edges
+    edge [fontname="Helvetica,Arial,sans-serif",fontsize=10]
+
+    // Users and attributes
+    Users -- user_id;
+    Users -- username;
+    Users -- email;
+    Users -- password;
+    Users -- user_type;
+
+    // Jobs and attributes
+    Jobs -- job_id;
+    Jobs -- job_title;
+    Jobs -- job_description;
+    Jobs -- salary;
+    Jobs -- job_location;
+    Jobs -- employer_id;
+
+    // Applications and attributes
+    Applications -- application_id;
+    Applications -- application_date;
+    Applications -- status;
+
+    // Employers and attributes
+    Employers -- employer_id;
+    Employers -- company_name;
+    Employers -- industry;
+    Employers -- location;
+    Employers -- contact_info;
+
+    // Relationships between entities
+    Employers -- "posts" [label="1"];
+    "posts" -- Jobs [label="n"];
+    Users -- "applies_for" [label="1"];
+    "applies_for" -- Applications [label="n"];
+    Jobs -- "applies_for" [label="1"];
+    Employers -- "employs" [label="n"];
+    "employs" -- Users [label="n"];
+}
+
+
+```
+
+
+```{mermaid}
+erDiagram 
+
+    USERS {
+        int user_id
+        string username
+        string email
+        string password
+        string user_type
+    }
+
+    JOBS {
+        int job_id
+        string job_title
+        string job_description
+        float salary
+        string location
+        int employer_id
+    }
+
+    APPLICATIONS {
+        int application_id
+        int job_id
+        int user_id
+        date application_date
+        string status
+    }
+
+    EMPLOYERS {
+        int employer_id
+        string company_name
+        string industry
+        string location
+        string contact_info
+    }
+
+    EMPLOYERS ||--o{ JOBS : posts
+    USERS ||--o{ APPLICATIONS : applies_for
+    JOBS ||--o| APPLICATIONS : receives
+    EMPLOYERS ||--o| USERS : employs
+
+```
+
+
+
+## Relational Schemas
+
+Below is a detailed schema for each entity, with attributes, primary and foreign keys, and constraints.
+
+### Users Table:
+```plaintext
+Users(
+   user_id INT PRIMARY KEY,
+   username VARCHAR(50),
+   email VARCHAR(100) UNIQUE,
+   password VARCHAR(256),
+   user_type ENUM('seeker', 'employer')
+)
+```
+### Relational Schemas
+
+Here are the relational schemas for each entity in the database, with primary keys (PK), foreign keys (FK), data types, domains, and constraints.
+
+1. Users
+
+Users(
+   user_id INT PRIMARY KEY,            -- Unique identifier for each user (PK)
+   username VARCHAR(50) NOT NULL,      -- Username, must be unique for each user
+   email VARCHAR(100) UNIQUE NOT NULL, -- Email, must be unique and not null
+   password VARCHAR(256) NOT NULL,     -- Password for the user, encrypted
+   user_type ENUM('seeker', 'employer')-- Defines if the user is a job seeker or employer
+)
+	•	Primary Key: user_id
+	•	Domain: user_type restricted to values (‘seeker’, ‘employer’).
+
+
+2. Jobs
+
+Jobs(
+   job_id INT PRIMARY KEY,                  -- Unique identifier for each job (PK)
+   job_title VARCHAR(100) NOT NULL,         -- Job title
+   job_description TEXT,                    -- Detailed job description
+   salary DECIMAL(10,2),                    -- Salary for the job
+   location VARCHAR(100),                   -- Job location
+   employer_id INT,                         -- FK referencing Employers
+   FOREIGN KEY (employer_id) REFERENCES Employers(employer_id) ON DELETE CASCADE -- Ensure referential integrity
+)
+	•	Primary Key: job_id
+	•	Foreign Key: employer_id references the Employers table.
+
+3. Applications
+
+Applications(
+   application_id INT PRIMARY KEY,               -- Unique identifier for each application (PK)
+   job_id INT,                                   -- FK referencing Jobs table
+   user_id INT,                                  -- FK referencing Users table
+   application_date DATE,                        -- Date the application was submitted
+   status ENUM('submitted', 'under review', 'rejected', 'accepted'), -- Status of the application
+   FOREIGN KEY (job_id) REFERENCES Jobs(job_id) ON DELETE CASCADE,   -- Ensure referential integrity
+   FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE -- Ensure referential integrity
+)
+
+	•	Primary Key: application_id
+	•	Foreign Keys: job_id references Jobs, user_id references Users.
+
+4. Employers
+
+Employers(
+   employer_id INT PRIMARY KEY,             -- Unique identifier for each employer (PK)
+   company_name VARCHAR(100) NOT NULL,      -- Company name
+   industry VARCHAR(100),                   -- Industry in which the company operates
+   location VARCHAR(100),                   -- Location of the company
+   contact_info VARCHAR(100)                -- Contact details of the employer
+)
+	•	Primary Key: employer_id
+
+### Functional Dependencies and Normalization
+
+### Functional Dependencies
+
+Let’s look at the functional dependencies in the proposed schema:
+
+	•	In Users:
+	•	user_id → username, email, password, user_type (Each user ID uniquely identifies a set of attributes).
+	•	In Jobs:
+	•	job_id → job_title, job_description, salary, location, employer_id (A unique job ID determines all job attributes).
+	•	In Applications:
+	•	application_id → job_id, user_id, application_date, status (A unique application ID determines job, user, and application status).
+	•	In Employers:
+	•	employer_id → company_name, industry, location, contact_info (An employer ID uniquely determines company information).
+
+### Normalization Process
+
+The schema is designed to be in BCNF (Boyce-Codd Normal Form) to remove redundancy and ensure functional dependency integrity. Here’s the process:
+
+	•	First Normal Form (1NF):
+	•	The relations are in 1NF since all attributes contain atomic values, and there are no repeating groups.
+	•	Second Normal Form (2NF):
+	•	The schema is in 2NF since all non-key attributes are fully functionally dependent on the primary key (e.g., job_id fully determines job_title, salary, etc.).
+	•	Boyce-Codd Normal Form (BCNF):
+	•	The schema is in BCNF because for every functional dependency X → Y, X is a superkey. For example, in the Jobs table, job_id is the only determinant of other attributes.
+
+The decomposition into BCNF ensures there are no redundant data, and each relation represents one concept (user, job, application, employer).
+
+### 20 Specific Queries (Relational Algebra)
+
+Here are 20 distinct queries that the database can answer, written in precise words and using relational algebra.
+
+	1.	Find all job titles for jobs located in New York:
+	•	π(job_title) (σ(location=‘New York’) (Jobs))
+	2.	List the usernames of users who applied for a specific job (job_id = 101):
+	•	π(username) (σ(job_id=101) (Users ⨝ Applications))
+	3.	Find the count of applications for a specific job (job_id = 101):
+	•	COUNT(σ(job_id=101) (Applications))
+	4.	Display job titles with salaries greater than $80,000:
+	•	π(job_title, salary) (σ(salary > 80000) (Jobs))
+	5.	List the email addresses of users who have applied for jobs in the ‘Software Engineer’ role:
+	•	π(email) (σ(job_title=‘Software Engineer’) (Users ⨝ Applications ⨝ Jobs))
+	6.	Retrieve all applications that are still under review:
+	•	σ(status=‘under review’) (Applications)
+	7.	Find the top 5 highest-paying jobs:
+	•	π(job_title, salary) (Jobs) ORDER BY salary DESC LIMIT 5
+	8.	List all jobs posted by a specific employer (employer_id = 10):
+	•	π(job_title) (σ(employer_id=10) (Jobs))
+	9.	Find the names of employers in the ‘Technology’ industry:
+	•	π(company_name) (σ(industry=‘Technology’) (Employers))
+	10.	List all job applications submitted in the past week:
+	•	π(application_id, job_id, application_date) (σ(application_date > (CURRENT_DATE - INTERVAL ‘7 DAYS’)) (Applications))
+	11.	Retrieve all job postings that have received at least one application:
+	•	π(job_title) (Jobs ⨝ Applications)
+	12.	Find job postings that have not received any applications:
+	•	π(job_title) (Jobs ⟕ Applications WHERE application_id IS NULL)
+	13.	List the average salary of all job postings by industry:
+	•	γ(industry, AVG(salary)) (Jobs ⨝ Employers)
+	14.	Retrieve the total number of users (job seekers) on the platform:
+	•	COUNT(σ(user_type=‘seeker’) (Users))
+	15.	Find the top 3 most applied-to jobs:
+	•	π(job_id, COUNT(application_id)) (Applications) GROUP BY job_id ORDER BY COUNT(application_id) DESC LIMIT 3
+	16.	Find all applications submitted by a specific user (user_id = 5):
+	•	π(application_id, job_title) (Users ⨝ Applications ⨝ Jobs WHERE user_id=5)
+	17.	List the highest-paying job in each location:
+	•	γ(location, MAX(salary)) (Jobs)
+	18.	Find the status of applications for a specific job (job_id = 202):
+	•	π(application_id, status) (σ(job_id=202) (Applications))
+	19.	Retrieve all job seekers who have not applied for any jobs yet:
+	•	π(username) (σ(user_type=‘seeker’) (Users ⟕ Applications WHERE application_id IS NULL))
+	20.	Find the job titles of the most recent jobs posted by each employer:
+	•	γ(employer_id, MAX(job_id)) (Jobs)
+
+
+### Sample Data
+
+
+Users Table:
+
+Here’s the sample data you can use for each of the tables in your **Job Board Website** database. You can directly copy these into your **`delivery8.qmd`** file.
+
+### **Sample Data for Users Table:**
+| user_id | username | email            | password | user_type |
+|---------|----------|------------------|----------|-----------|
+| 1       | jsmith   | jsmith@email.com | *****    | seeker    |
+| 2       | acorp    | hr@acorp.com     | *****    | employer  |
+| 3       | mjohnson | mjohnson@gmail.com| *****    | seeker    |
+| 4       | techcorp | hiring@techcorp.com | ***** | employer  |
+| 5       | amiller  | amiller@yahoo.com | *****    | seeker    |
+
+---
+
+### **Sample Data for Jobs Table:**
+| job_id | job_title        | job_description         | salary  | location         | employer_id |
+|--------|------------------|-------------------------|---------|------------------|-------------|
+| 101    | Software Engineer| Develop software        | 80000.00| New York, NY     | 2           |
+| 102    | Data Analyst     | Analyze data trends     | 65000.00| San Francisco, CA| 2           |
+| 103    | Product Manager  | Oversee product roadmap | 90000.00| Austin, TX       | 4           |
+| 104    | Web Developer    | Build web applications  | 75000.00| Chicago, IL      | 4           |
+| 105    | IT Support       | Provide technical support| 50000.00| Seattle, WA     | 2           |
+
+---
+
+### **Sample Data for Applications Table:**
+| application_id | job_id | user_id | application_date | status        |
+|----------------|--------|---------|------------------|---------------|
+| 1              | 101    | 1       | 2024-09-30       | submitted     |
+| 2              | 102    | 1       | 2024-10-01       | under review  |
+| 3              | 103    | 3       | 2024-10-02       | submitted     |
+| 4              | 101    | 3       | 2024-10-03       | rejected      |
+| 5              | 104    | 5       | 2024-10-04       | under review  |
+
+---
+
+### **Sample Data for Employers Table:**
+| employer_id | company_name | industry      | location        | contact_info      |
+|-------------|--------------|---------------|-----------------|-------------------|
+| 2           | ACORP Inc.   | Technology    | New York, NY    | hr@acorp.com      |
+| 4           | TechCorp LLC | Software      | San Francisco, CA| hiring@techcorp.com|
+
+---
+
+
+## Gantt Chart
+
+```{gantt}
+    title: Project Management Schedule
+    dateFormat YYYY-MM-DD
+    section Planning & Design
+    ERD Design            :done,      des1, 2024-10-01, 2024-10-04
+    Relational Schema Design:done,      des2, 2024-10-05, 2024-10-07
+    Functional Dependencies Analysis:done,    des3, 2024-10-08, 2024-10-09
+    Query Development      :active,    des4, 2024-10-10, 2024-10-11
+    Initial Report Submission : milestone, rep1, 2024-10-13, 1d
+    
+    section Development & Refinement
+    Video Presentation Preparation:    dev1, 2024-10-15, 2024-10-20
+    Project Refinement (Schema, Queries, etc.):    dev2, 2024-11-01, 2024-11-15
+    Testing and Debugging      :       dev3, 2024-11-16, 2024-12-01
+    
+    section Final Submission
+    Final Report Refinement    :       sub1, 2024-12-01, 2024-12-08
+    Final Project Submission   : milestone, sub2, 2024-12-12, 1d
+
+#### **Explanation of the Gantt Chart:**
+- The Gantt chart shows each task in a horizontal timeline format with start and end dates.
+- **Milestones** (like the **Initial Report Submission** and **Final Project Submission**) are represented as single-day tasks.
+- The **completed** tasks (like ERD Design, Schema Design) are marked as `done`.
+- The **current task** (Query Development) is marked as `active`, indicating that work is still ongoing.
+
+--- 
