@@ -1,14 +1,16 @@
-# Use the official PHP image
-FROM php:8.1-apache
+FROM php:8.1-cli
 
-# Copy your project files to the Apache document root
-COPY . /var/www/html/
+# Install any PHP extensions you need
+RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-# Set permissions for the Apache server
-RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
+# Copy your project files to the container
+COPY . /app
 
-# Expose port 8080
+# Set the working directory
+WORKDIR /app
+
+# Expose port 8080 for Render
 EXPOSE 8080
 
-# Start the Apache server
-CMD ["apache2-foreground"]
+# Start the PHP built-in server
+CMD ["php", "-S", "0.0.0.0:8080", "index.php"]
